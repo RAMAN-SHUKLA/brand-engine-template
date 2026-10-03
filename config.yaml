@@ -1,0 +1,146 @@
+# brand-engine configuration. Edit everything marked YOUR. See README "Step 3" and "Step 4".
+# Empty strings and empty lists are fine: anything left empty is simply left out.
+# After editing this file, run:  python cli.py ingest
+
+# IANA timezone every scheduled time below is read in.
+# Examples: UTC, America/New_York, Europe/London, Asia/Kolkata, Australia/Sydney
+timezone: UTC
+
+# ----------------------------------------------------------------------------- who you are
+person:
+  name: "Your Name"                  # YOUR name exactly as on your profiles
+  handle: "yourhandle"               # YOUR main social handle, without the @
+  avatar: assets/me/avatar.jpg       # YOUR square headshot (a neutral placeholder is used until it exists)
+  location: ""                       # optional, e.g. "Austin, TX"
+  headline: "What you do in one line"   # e.g. "Fitness coach for busy professionals"
+  email: ""                          # optional; only used in the media kit
+  links:                             # leave empty the ones you don't use
+    website: ""
+    instagram: ""
+    linkedin: ""
+    threads: ""
+    x: ""
+    bluesky: ""
+    youtube: ""
+    tiktok: ""
+    github: ""
+
+# ----------------------------------------------------------------------------- your niche
+# This is the most important section: the writer uses it for every post. Be specific.
+niche:
+  # What you create content about, in one line.
+  topic: "YOUR niche, e.g. 'simple strength training for busy professionals over 30'"
+
+  # 3-6 sentences: your angle, your experience, what makes your take different, what you believe
+  # that others in your niche don't. This is what makes posts sound like you and not like everyone else.
+  description: >
+    Describe your angle here.
+
+  # Who you are talking to. The first one is the default reader for every post.
+  audience:
+    - "YOUR main audience, e.g. 'office workers aged 30-45 who have tried and quit the gym'"
+
+  # What your content should achieve for you (guides the call to action and topic choice).
+  goal: "e.g. grow an engaged following and get people to join my newsletter"
+
+  # 3-5 content pillars: the recurring themes you post about. `key` is a short id (letters/underscores).
+  pillars:
+    - key: education
+      name: "Teach something useful"
+      angle: "Practical how-tos and frameworks your audience can apply today"
+    - key: story
+      name: "Behind the scenes & personal stories"
+      angle: "Your experiences, wins, failures and lessons, told honestly"
+    - key: myths
+      name: "Myths & mistakes"
+      angle: "Common beliefs in your niche that are wrong, and what to do instead"
+    - key: opinion
+      name: "Opinions & trends"
+      angle: "Your take on what is changing in your field and why it matters"
+
+  # How you sound. Describe tone, sentence style, words you like, how formal you are.
+  voice: >
+    Warm, direct and practical. Short sentences. First person. Talks like a friend who knows
+    the subject well. No hype, no jargon.
+
+  # Search terms your audience actually types. Woven into hooks and posts naturally (never stuffed).
+  keywords: []                       # e.g. ["home workout", "strength training for beginners"]
+
+  # Hashtag pool to rotate through. 3-5 relevant ones are picked per post.
+  hashtags: []                       # e.g. ["#StrengthTraining", "#HomeWorkout", "#FitnessOver30"]
+
+  # What readers should do after reading. Empty = end posts with a question to start a discussion.
+  call_to_action: ""                 # e.g. "Follow for a new 20-minute workout every Monday"
+
+  # Extra rules for the writer, in plain language.
+  content_rules: []                  # e.g. ["Never give medical advice", "Always use metric units"]
+
+  avoid_mentions: []                 # names, brands or links the writer must never mention
+  banned_phrases:                    # phrases that make posts sound generic
+    - revolutionary
+    - game-changing
+    - cutting-edge
+    - unlock the power
+    - delve
+    - in today's fast-paced world
+    - "In this article, we will"
+
+# ----------------------------------------------------------------------------- optional sources
+# Extra material about you, pulled in by `python cli.py ingest`. All optional.
+ingest:
+  website_urls: []                   # pages about you or your work, e.g. your About page
+  github_user: ""                    # developers only: public repos + READMEs become facts
+  github_featured: []                # repo names to always include
+  github_max_readmes: 10
+  exclude_link_patterns: []          # links containing these substrings are dropped from facts
+  text_replacements: {}              # "old text": "new text" applied to every ingested fact
+  display_names: {}                  # repo-name: "Pretty Project Name"
+
+# ----------------------------------------------------------------------------- AI writer
+writer:
+  model: claude-opus-5-5
+  effort: high                       # low | medium | high | xhigh | max (higher = better and slower)
+  max_tokens: 64000
+  use_refusal_fallbacks: true
+  target_words: 1200                 # length of long-form articles
+
+# ----------------------------------------------------------------------------- publishing
+publish:
+  primary_platform: devto            # long-form articles: where the original lives (devto | hashnode | blogger)
+  platforms: [devto, linkedin]       # default targets for `python cli.py publish`
+  devto:
+    series: ""
+  hashnode:
+    publication_id: ""               # or set HASHNODE_PUBLICATION_ID in .env
+  blogger:
+    blog_id: ""
+  linkedin:
+    api_version: "202503"
+    # Appended to every LinkedIn post. Keep your name spelled exactly as on your profile.
+    signature: |
+      — Your Name | What you do in one line
+  bluesky:
+    signature: "· Your Name"
+    links_post: "Your Name — what you do.\nWebsite: https://example.com"
+    links_post_reply: ""
+  threads:
+    signature: ""
+  devto_footer: |
+    ---
+    **Your Name** · What you do in one line.
+  queue:
+    max_late_hours: 24               # skip a post rather than publish it more than this many hours late
+    days: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+    times: ["09:00", "18:00"]
+    platform_times:                  # posting slots per platform, local times in `timezone`
+      linkedin: ["09:00", "18:00"]
+      threads: ["10:00", "19:00"]
+      bluesky: ["09:30", "13:00", "19:30"]
+      instagram: ["12:00", "20:00"]
+      devto: ["10:00"]
+      blogger: ["10:00"]
+
+# ----------------------------------------------------------------------------- media kit (optional)
+# `python cli.py media-kit` builds a one-page media kit from your facts. Leave empty for defaults.
+media_kit:
+  offers: []                         # e.g. ["Sponsored posts", "Workshops", "Podcast guest appearances"]

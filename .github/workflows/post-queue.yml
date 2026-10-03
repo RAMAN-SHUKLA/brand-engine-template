@@ -1,0 +1,88 @@
+# Cloud runner: posts whatever is due in data/post_queue.json, then commits the updated queue state back.
+#
+# Setup (once, in YOUR copy of this repo):
+#   1. Keep your copy PRIVATE -- it will carry your approved posts, photos and publish log.
+#   2. Repo -> Settings -> Secrets and variables -> Actions -> Secrets: add the tokens you use
+#      (LINKEDIN_ACCESS_TOKEN, INSTAGRAM_ACCESS_TOKEN, ... -- see the env block below; missing ones are skipped).
+#      From the project folder:  gh secret set LINKEDIN_ACCESS_TOKEN --body "<token>"
+#   3. Repo -> Settings -> Actions -> General -> Workflow permissions -> "Read and write permissions".
+#   4. Turn the runner on (it does nothing until you do):  gh variable set BRAND_ENGINE_ENABLED --body true
+#
+# Times in the queue are read in config.yaml's `timezone`.
+#
+# --- On-time posting: read this before assuming a missed post is a bug ---
+# GitHub's `schedule:` trigger is best-effort ("can be delayed during periods of high load", no upper
+# bound); hourly crons have been observed firing only ~7 times a day, with multi-hour dead zones.
+# `workflow_dispatch` calls, by contrast, start within seconds. For on-the-minute posting, point a free
+# external clock (e.g. cron-job.org) at this workflow's dispatch API -- see README "Keeping the cloud
+# runner on time". The `schedule:` below is then only a fallback; the concurrency group serialises
+# overlapping runs so nothing double-posts. Per-run caps (LinkedIn 2 / Bluesky 3) govern backlog drain.
+#
+# Budget: 2 runs/hour x 24 x ~1 billed min = ~1,440 min/month, inside the free private-repo allowance.
+name: post-queue
+on:
+  schedule:
+    # :02 and :32 avoid the heavy global GitHub Actions congestion at :00 and :30
+    - cron: "2,32 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - "data/post_queue.json"
+      - ".github/workflows/post-queue.yml"
+  workflow_dispatch:
+    inputs:
+      only_item:
+        description: "Post ONE queue item now regardless of its schedule (e.g. Q123). Empty = post whatever is due."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: post-queue
+  cancel-in-progress: false
+
+jobs:
+  run-queue:
+    if: ${{ vars.BRAND_ENGINE_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+      INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+      BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+      BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+      DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+      HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+      BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+      BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -q requests PyYAML python-dotenv Markdown beautifulsoup4 pillow pymupdf
+      - name: Post what is due
+        run: python cli.py queue run ${{ inputs.only_item != '' && format('--only {0}', inputs.only_item) || '' }}
+      - name: Commit queue state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/post_queue.json data/publish_log.json data/batches drafts || true
+          git diff --cached --quiet || git commit -m "queue: record posted items"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+
+          if git diff --name-only --diff-filter=U | grep -q . ; then
+            echo "::error::merge conflict left unresolved after autostash pop -- stopping without committing/pushing"
+            git status --short
+            exit 1
+          fi
+          git push origin HEAD:main

@@ -1,0 +1,26 @@
+# Facts about you that the writer may use: credentials, results, milestones, stories, offers.
+# The writer is grounded ONLY in facts (this file + anything `ingest` pulls in), so anything missing
+# here will never appear in a post, and anything here must be true and verifiable.
+# Run `python cli.py ingest` after editing.
+#
+# Allowed kind values:
+#   role | award | achievement | project | speaking | mentoring | community | education | stat | story | other
+
+facts: []
+# Examples (uncomment, then replace with your own):
+#  - text: "Certified personal trainer (NASM) since 2019, coaching 200+ clients online."
+#    kind: role
+#
+#  - text: "Lost 18 kg in 2021 with three home workouts a week and no gym membership."
+#    kind: story
+#
+#  - text: "My newsletter 'Strong at 40' has 4,000 subscribers and goes out every Monday."
+#    kind: stat
+#    url: https://example.com/newsletter
+#
+#  - text: "Spoke about habit-based fitness at Example Wellness Summit, March 2026."
+#    kind: speaking
+#
+#  - text: "Created a 6-week beginner strength program used by 1,200 people."
+#    kind: project
+#    url: https://example.com/program

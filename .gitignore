@@ -1,0 +1,39 @@
+# secrets
+.env
+
+# python / OS / editors
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# generated personal data stays local; only what the cloud runner needs is tracked
+data/*
+!data/post_queue.json
+!data/publish_log.json
+!data/batches/
+!data/manual_facts.yaml
+!data/voice_samples.md
+!data/carousels/
+data/batches/**/review.md
+outreach_out/*.csv
+# Resume logs written by publishing scripts MUST be tracked: an untracked log reads as empty on a fresh
+# cloud checkout, and the script would re-publish everything as duplicates.
+!data/*_log.json
+
+# carousel build artefacts (html, previews, resized image cache) -- the PDFs in assets/carousels/ are what ships
+assets/carousel/decks/
+scratch/
+scratch_card_test.*
+img/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.tmp
+.vercel/

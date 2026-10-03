@@ -1,0 +1,48 @@
+{
+  "title": "How to batch a week of content in 90 minutes",
+  "slug": "example-deck",
+  "theme": "cream",
+  "caption": "Posting every day is hard when you start from a blank screen every day.\n\nBatching fixes it: collect ideas all week, write in one focused session, review, schedule, done.\n\nHere is the 90-minute routine.\n\n#ContentCreation #ContentStrategy #CreatorTips #SocialMediaTips",
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "CONTENT SYSTEMS",
+      "title": [["Post every day", "dark"], ["without thinking", "dark"], ["about it every day", "accent"]],
+      "subtitle": "Batch a week of posts in ==one 90-minute session==.",
+      "photo_mode": "cutout"
+    },
+    {
+      "type": "compare",
+      "title": [["Posting on the fly vs", "dark"], ["Batching", "accent"]],
+      "left": {"label": "On the fly", "items": ["Blank screen every single day", "Post only when inspired", "Quality goes up and down", "One busy day breaks the streak"]},
+      "right": {"label": "Batching", "items": ["Ideas collected all week", "One focused writing session", "Reviewed before it goes out", "Scheduled: posts while you live"]},
+      "note": "Consistency comes from a system, not from motivation."
+    },
+    {
+      "type": "steps",
+      "title": [["The 90-minute", "dark"], ["session", "accent"]],
+      "steps": [
+        {"title": "Collect (15 min)", "desc": "Pull the week's ideas from your notes, comments and DMs."},
+        {"title": "Draft (45 min)", "desc": "Write every post in one go. **Don't edit while drafting.**"},
+        {"title": "Review (15 min)", "desc": "Read each post out loud. Cut anything that doesn't sound like you."},
+        {"title": "Schedule (15 min)", "desc": "Queue them into your best time slots and close the laptop."}
+      ]
+    },
+    {
+      "type": "points",
+      "title": [["What to", "dark"], ["track", "accent"]],
+      "bullets": [
+        "**Consistency**: posts published vs posts planned",
+        "**Saves and shares**: a stronger signal than likes",
+        "**Replies and DMs**: real conversations with your audience",
+        "**Best pillar**: which theme your audience responds to most"
+      ],
+      "note": "Review once a month. Do more of what works."
+    },
+    {
+      "type": "quote",
+      "text": "A good post every day beats a perfect post every month.",
+      "by": "every creator who stuck with it"
+    }
+  ]
+}

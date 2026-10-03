@@ -1,0 +1,16 @@
+anthropic>=0.80
+requests>=2.32
+pypdf>=4.0
+pdfplumber>=0.11
+beautifulsoup4>=4.12
+PyYAML>=6.0
+python-dotenv>=1.0
+Markdown>=3.5
+python-slugify>=8.0
+# carousel rendering, share cards and Instagram export (also needs Chrome, Chromium or Edge installed)
+Pillow>=10.0
+pymupdf>=1.24
+segno>=1.6
+# optional: face-aware photo cropping in carousels (falls back to centre crops without it)
+opencv-python-headless>=4.9,<5   # OpenCV 5 dropped the Haar CascadeClassifier used here
+numpy>=1.26
